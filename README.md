@@ -15,3 +15,12 @@
 - **openpyxl**: 3.1.5
 - **PyQt5**: 5.15.11
 - **scikit-learn**: 1.7.2
+
+## 界面示例
+
+![image](https://github.com/myy258/MINI-DATA-ANALYSIS-PLATFORM/blob/master/img/Screenshot%202026-04-27%20154809.png)
+![image](https://github.com/myy258/MINI-DATA-ANALYSIS-PLATFORM/blob/master/img/Screenshot%202026-04-27%20155150.png)
+
+## 备注
+
+目前DEMO可用，后续有空再更新。计划加入更多机器学习模型和一些功能，考虑开发可调用本地LLM和线上LLM的模块。
