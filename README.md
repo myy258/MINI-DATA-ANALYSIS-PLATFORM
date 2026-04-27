@@ -5,7 +5,7 @@
 ## 使用环境
 
 - **Python版本**: 3.10.19
-- **Conda**: Anaconda
+- **Conda**: Miniforge
 
 ## 主要模块版本
 
