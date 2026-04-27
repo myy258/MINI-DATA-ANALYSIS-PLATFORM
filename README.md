@@ -1,6 +1,6 @@
 # Mini ML Platform
 ## 小型机器学习平台
-本平台旨在可以快速查看数据分布和进行机器学习任务，可模型模块化。内置少量机器学习模型，统计分析方法和数据可视化。可导入excel文件。无法在本平台处理数据。
+本平台旨在可以快速查看数据分布和进行机器学习任务。内置少量机器学习模型，统计分析方法和数据可视化。
 
 ## 使用环境
 
@@ -20,6 +20,11 @@
 
 ![image](https://github.com/myy258/MINI-DATA-ANALYSIS-PLATFORM/blob/master/img/Screenshot%202026-04-27%20154809.png)
 ![image](https://github.com/myy258/MINI-DATA-ANALYSIS-PLATFORM/blob/master/img/Screenshot%202026-04-27%20155150.png)
+
+## 功能介绍
+- **可导入excel文件。无法在本平台处理数据。只可对字段进行排序**
+- **可进行机器学习分类和回归任务，可导出导入模型。模型可以调参，但可用参数有限**
+- **可生成一组或多组图标，可视化模块的XY轴可多选**
 
 ## 备注
 
