@@ -85,14 +85,11 @@ class UIInitMixin:
         self.viz_tab = QWidget()
         self.init_viz_tab()
         self.ai_tab = QWidget()
-        self.init_ai_tab()
 
         self.tabs.addTab(self.data_tab,     "📊 Data Review")
         self.tabs.addTab(self.stats_tab,    "📈 Statistics Analysis")
         self.tabs.addTab(self.ml_tab,       "🤖 Machine Learning")
-        self.tabs.addTab(self.ensemble_tab, "🎯 Ensemble Model")
         self.tabs.addTab(self.viz_tab,      "📉 Visualization")
-        # self.tabs.addTab(self.ai_tab,       "🧠 LLM")
         layout.addWidget(self.tabs)
         central_widget.setLayout(layout)
         self.statusBar().showMessage('就绪 - 请打开Excel文件')
@@ -388,119 +385,6 @@ class UIInitMixin:
         layout.addWidget(self.canvas)
         self.viz_tab.setLayout(layout)
 
-    def init_ai_tab(self):
-        layout = QVBoxLayout()
-        transformers_available = _check_transformers()
-
-        config_group = QGroupBox("🔧 AI配置")
-        config_layout = QVBoxLayout()
-
-        model_type_layout = QHBoxLayout()
-        self.ai_model_type_group = QButtonGroup()
-        self.radio_transformers = QRadioButton("本地模型 (Transformers)")
-        self.radio_api = QRadioButton("API调用 (推荐)")
-        self.radio_api.setChecked(True)
-        self.ai_model_type_group.addButton(self.radio_transformers, 1)
-        self.ai_model_type_group.addButton(self.radio_api, 2)
-        model_type_layout.addWidget(self.radio_transformers)
-        model_type_layout.addWidget(self.radio_api)
-        if not transformers_available:
-            self.radio_transformers.setEnabled(False)
-            self.radio_transformers.setToolTip("需要安装: pip install transformers torch")
-        model_type_layout.addStretch()
-        config_layout.addLayout(model_type_layout)
-
-        transformers_layout = QHBoxLayout()
-        transformers_layout.addWidget(QLabel('模型路径/名称:'))
-        self.ai_transformers_path = QLineEdit()
-        self.ai_transformers_path.setPlaceholderText(
-            'HuggingFace ID 或本地路径，例如: Qwen/Qwen3-0.6B  |  Qwen/Qwen3-1.7B')
-        transformers_layout.addWidget(self.ai_transformers_path)
-        self.btn_load_transformers = QPushButton('加载模型')
-        self.btn_load_transformers.clicked.connect(self.load_transformers_model)
-        transformers_layout.addWidget(self.btn_load_transformers)
-        config_layout.addLayout(transformers_layout)
-
-        hint_label = QLabel(
-            '💡 本地模型提示: 首次加载会自动从 HuggingFace 下载。'
-            'Qwen3-0.6B (~1.2GB) 适合CPU运行；Qwen3-1.7B 效果更好但较慢。'
-        )
-        hint_label.setWordWrap(True)
-        hint_label.setStyleSheet("color: #666; font-size: 11px; padding: 2px 0;")
-        config_layout.addWidget(hint_label)
-
-        api_layout = QHBoxLayout()
-        api_layout.addWidget(QLabel('API 地址:'))
-        self.ai_api_url = QLineEdit()
-        self.ai_api_url.setText('https://api.siliconflow.cn/v1/chat/completions')
-        self.ai_api_url.setPlaceholderText('OpenAI 兼容接口地址')
-        api_layout.addWidget(self.ai_api_url)
-        config_layout.addLayout(api_layout)
-
-        api_key_layout = QHBoxLayout()
-        api_key_layout.addWidget(QLabel('API Key:'))
-        self.ai_api_key = QLineEdit()
-        self.ai_api_key.setPlaceholderText('在 siliconflow.cn 免费注册后获取 API Key')
-        self.ai_api_key.setEchoMode(QLineEdit.Password)
-        api_key_layout.addWidget(self.ai_api_key)
-        config_layout.addLayout(api_key_layout)
-
-        model_name_layout = QHBoxLayout()
-        model_name_layout.addWidget(QLabel('模型名称:'))
-        self.ai_model_name = QLineEdit()
-        self.ai_model_name.setText('Qwen/Qwen3-8B')
-        self.ai_model_name.setPlaceholderText('模型名称')
-        model_name_layout.addWidget(self.ai_model_name)
-
-        self.ai_model_preset = QComboBox()
-        self.ai_model_preset.setMinimumWidth(230)
-        self.ai_model_preset.addItems([
-            '-- 快速选择模型 --',
-            'Qwen/Qwen3-8B',
-            'Qwen/Qwen3-14B',
-            'Qwen/Qwen2.5-7B-Instruct',
-            'deepseek-ai/DeepSeek-V3',
-            'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
-            'THUDM/glm-4-9b-chat',
-        ])
-        self.ai_model_preset.currentIndexChanged.connect(self._on_model_preset_changed)
-        model_name_layout.addWidget(self.ai_model_preset)
-        config_layout.addLayout(model_name_layout)
-
-        api_hint = QLabel(
-            '💡 API提示: 使用硅基流动 (SiliconFlow) 平台，注册即送免费额度，支持 Qwen3、DeepSeek 等主流模型。'
-        )
-        api_hint.setWordWrap(True)
-        api_hint.setStyleSheet("color: #666; font-size: 11px; padding: 2px 0;")
-        config_layout.addWidget(api_hint)
-
-        config_group.setLayout(config_layout)
-        layout.addWidget(config_group)
-
-        chat_group = QGroupBox("💬 对话 (模型已了解当前数据和模型分析结果，可直接提问)")
-        chat_layout = QVBoxLayout()
-        self.ai_chat_history = QTextBrowser()
-        self.ai_chat_history.setMinimumHeight(300)
-        chat_layout.addWidget(self.ai_chat_history)
-
-        input_layout = QHBoxLayout()
-        self.ai_input = QLineEdit()
-        self.ai_input.setPlaceholderText(
-            '例如: 模型准确率如何？有什么改进建议？  /  数据中哪些特征最重要？')
-        self.ai_input.returnPressed.connect(self.send_ai_message)
-        input_layout.addWidget(self.ai_input)
-        self.btn_send = QPushButton('发送')
-        self.btn_send.clicked.connect(self.send_ai_message)
-        self.btn_send.setMinimumHeight(40)
-        input_layout.addWidget(self.btn_send)
-        self.btn_clear_chat = QPushButton('清空')
-        self.btn_clear_chat.clicked.connect(self.clear_ai_chat)
-        self.btn_clear_chat.setMinimumHeight(40)
-        input_layout.addWidget(self.btn_clear_chat)
-        chat_layout.addLayout(input_layout)
-        chat_group.setLayout(chat_layout)
-        layout.addWidget(chat_group)
-        self.ai_tab.setLayout(layout)
 
     def _on_model_preset_changed(self, index):
         if index > 0:
