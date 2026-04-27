@@ -16,7 +16,7 @@ def _check_transformers():
 
 class UIInitMixin:
     def initUI(self):
-        self.setWindowTitle('Excel 智能分析器 - AI驱动 (优化版)')
+        self.setWindowTitle('MINI机器学习平台')
         self.setGeometry(100, 100, 1400, 800)
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
